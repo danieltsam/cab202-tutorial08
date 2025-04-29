@@ -44,7 +44,7 @@ int main(void)
 
     Initialise this variable with the initial state of the state machine.
     */
-led_state my_state = OFF;
+    led_state my_state = OFF;
 
     /** CODE: Write your code for Ex 8.1 above this line. */
 
@@ -95,38 +95,42 @@ led_state my_state = OFF;
         machine to the initial state and reset any outputs to their
         default values.
         */
+        /** EX: 8.3 */
 
         switch (my_state) {
             case OFF:
-                if (pb_falling_edge & 0x01) { 
+                // Transition to CONFIRM_ON if S1 (PA4) is pressed
+                if (pb_falling_edge & (1 << 4)) { 
                     my_state = CONFIRM_ON;
                 }
                 break;
 
             case CONFIRM_ON:
-                if (pb_falling_edge & 0x01) { 
+                // Transition to ON if S1 (PA4) is pressed again
+                if (pb_falling_edge & (1 << 4)) { 
                     my_state = ON;
                 }
                 break;
 
             case ON:
-                if (pb_falling_edge & 0x02) { 
+                // Transition to CONFIRM_OFF if S2 (PA5) is pressed
+                if (pb_falling_edge & (1 << 5)) { 
                     my_state = CONFIRM_OFF;
                 }
                 break;
 
             case CONFIRM_OFF:
-                if (pb_falling_edge & 0x02) { 
+                // Transition to OFF if S2 (PA5) is pressed again
+                if (pb_falling_edge & (1 << 5)) { 
                     my_state = OFF;
                 }
                 break;
 
             default:
+                // Reset to initial state in case of invalid state
                 my_state = OFF;
                 break;
         }
-
-
 
         /** CODE: Write your code for Ex 8.3 above this line. */
     }
