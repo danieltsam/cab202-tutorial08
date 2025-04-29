@@ -1,5 +1,7 @@
 #include "timer.h"
 
+uint8_t pb_falling_edge = 0;
+
 /** Tutorial 8
 
 INTRODUCTION:
@@ -22,6 +24,12 @@ Use meaningful names for each enum value.
 TIP: Use the "typedef" keyword to create a type alias for your enum.
 */
 
+typedef enum {
+    OFF,
+    CONFIRM_ON,
+    ON,
+    CONFIRM_OFF
+} led_state; 
 
 /** CODE: Write your code for Ex 8.0 above this line. */
 
@@ -36,7 +44,7 @@ int main(void)
 
     Initialise this variable with the initial state of the state machine.
     */
-
+led_state init_state = OFF;
 
     /** CODE: Write your code for Ex 8.1 above this line. */
 
@@ -61,6 +69,11 @@ int main(void)
         iterations of this while loop.
         */
 
+        static uint8_t previous_pb_state = 0xFF;
+
+        pb_falling_edge = previous_pb_state & pb_debounced_state;
+
+        previous_pb_state = pb_debounced_state;
 
         /** CODE: Write your code for Ex 8.2 above this line. */
 
