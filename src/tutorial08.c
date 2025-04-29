@@ -44,7 +44,7 @@ int main(void)
 
     Initialise this variable with the initial state of the state machine.
     */
-led_state init_state = OFF;
+led_state my_state = OFF;
 
     /** CODE: Write your code for Ex 8.1 above this line. */
 
@@ -71,7 +71,7 @@ led_state init_state = OFF;
 
         static uint8_t previous_pb_state = 0xFF;
 
-        pb_falling_edge = previous_pb_state & pb_debounced_state;
+        pb_falling_edge = (previous_pb_state ^ pb_debounced_state) & previous_pb_state;
 
         previous_pb_state = pb_debounced_state;
 
@@ -95,6 +95,37 @@ led_state init_state = OFF;
         machine to the initial state and reset any outputs to their
         default values.
         */
+
+        switch (my_state) {
+            case OFF:
+                if (pb_falling_edge & 0x01) { 
+                    my_state = CONFIRM_ON;
+                }
+                break;
+
+            case CONFIRM_ON:
+                if (pb_falling_edge & 0x01) { 
+                    my_state = ON;
+                }
+                break;
+
+            case ON:
+                if (pb_falling_edge & 0x02) { 
+                    my_state = CONFIRM_OFF;
+                }
+                break;
+
+            case CONFIRM_OFF:
+                if (pb_falling_edge & 0x02) { 
+                    my_state = OFF;
+                }
+                break;
+
+            default:
+                my_state = OFF;
+                break;
+        }
+
 
 
         /** CODE: Write your code for Ex 8.3 above this line. */
