@@ -99,35 +99,36 @@ int main(void)
 
         switch (my_state) {
             case OFF:
-                // Transition to CONFIRM_ON if S1 (PA4) is pressed
-                if (pb_falling_edge & (1 << 4)) { 
+                if (pb_falling_edge & (1 << 4)) { // S1 pressed
                     my_state = CONFIRM_ON;
                 }
                 break;
 
             case CONFIRM_ON:
-                // Transition to ON if S1 (PA4) is pressed again
-                if (pb_falling_edge & (1 << 4)) { 
+                if (pb_falling_edge & (1 << 5)) { // S2 pressed
                     my_state = ON;
+                }
+                else if (pb_falling_edge & ((1 << 4) | (1 << 6) | (1 << 7))) { // S1/S3/S4
+                    my_state = OFF;
                 }
                 break;
 
             case ON:
-                // Transition to CONFIRM_OFF if S2 (PA5) is pressed
-                if (pb_falling_edge & (1 << 5)) { 
+                if (pb_falling_edge & (1 << 6)) { // S3 pressed
                     my_state = CONFIRM_OFF;
                 }
                 break;
 
             case CONFIRM_OFF:
-                // Transition to OFF if S2 (PA5) is pressed again
-                if (pb_falling_edge & (1 << 5)) { 
+                if (pb_falling_edge & (1 << 7)) { // S4 pressed
                     my_state = OFF;
+                }
+                else if (pb_falling_edge & ((1 << 4) | (1 << 5) | (1 << 6))) { // S1/S2/S3
+                    my_state = ON;
                 }
                 break;
 
             default:
-                // Reset to initial state in case of invalid state
                 my_state = OFF;
                 break;
         }
