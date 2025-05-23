@@ -26,12 +26,16 @@ void timer_init(void)
 
 ISR(TCB1_INT_vect)
 {
-    // Sample pushbutton state
-    uint8_t pb_sample = PORTA.IN;
+    static uint8_t count0 = 0;
+    static uint8_t count1 = 0;
 
-    // This variable currently contains a raw sample of the pushbuttons.
-    // Modify the code in this ISR to implement debouncing correctly.
-    pb_debounced_state = pb_sample;
+    uint8_t pb_sample = PORTA.IN;
+    uint8_t pb_changed = pb_sample ^ pb_debounced_state;
+
+    count1 = (count1 ^ count0) & pb_changed;
+    count0 = ~count0 & pb_changed;
+
+    pb_debounced_state ^= (count1 & count0);
 
     TCB1.INTFLAGS = TCB_CAPT_bm;
 }
