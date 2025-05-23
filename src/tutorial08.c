@@ -97,40 +97,38 @@ int main(void)
         */
         /** EX: 8.3 */
 
-        switch (my_state) {
-            case OFF:
-                if (pb_falling_edge & (1 << 4)) { // S1 pressed
-                    my_state = CONFIRM_ON;
-                }
-                break;
+            switch (my_state) {
+        case OFF:
+            if (pb_falling_edge & (1 << 4)) { // S1 pressed
+                my_state = CONFIRM_ON;
+            }
+            break;
 
-            case CONFIRM_ON:
-                if (pb_falling_edge & (1 << 5)) { // S2 pressed
-                    my_state = ON;
-                }
-                else if (pb_falling_edge & ((1 << 4) | (1 << 6) | (1 << 7))) { // S1/S3/S4
-                    my_state = OFF;
-                }
-                break;
-
-            case ON:
-                if (pb_falling_edge & (1 << 6)) { // S3 pressed
-                    my_state = CONFIRM_OFF;
-                }
-                break;
-
-            case CONFIRM_OFF:
-                if (pb_falling_edge & (1 << 7)) { // S4 pressed
-                    my_state = OFF;
-                }
-                else if (pb_falling_edge & ((1 << 4) | (1 << 5) | (1 << 6))) { // S1/S2/S3
-                    my_state = ON;
-                }
-                break;
-
-            default:
+        case CONFIRM_ON:
+            if (pb_falling_edge & (1 << 5)) { // S2 pressed
+                my_state = ON;
+            } else if (pb_falling_edge & ((1 << 4) | (1 << 6) | (1 << 7))) { // S1, S3, or S4 pressed
                 my_state = OFF;
-                break;
+            }
+            break;
+
+        case ON:
+            if (pb_falling_edge & (1 << 6)) { // S3 pressed
+                my_state = CONFIRM_OFF;
+            }
+            break;
+
+        case CONFIRM_OFF:
+            if (pb_falling_edge & (1 << 7)) { // S4 pressed
+                my_state = OFF;
+            } else if (pb_falling_edge & ((1 << 4) | (1 << 5) | (1 << 6))) { // S1, S2, or S3 pressed
+                my_state = ON;
+            }
+            break;
+
+        default:
+            my_state = OFF;
+            break;
         }
 
         /** CODE: Write your code for Ex 8.3 above this line. */
