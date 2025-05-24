@@ -18,7 +18,7 @@ void timer_init(void)
 {
     cli();
     TCB1.CTRLB = TCB_CNTMODE_INT_gc; // Configure TCB1 in periodic interrupt mode
-    TCB1.CCMP = 3333;                // Set interval for 1 ms (3333 clocks @ 3.333 MHz)
+    TCB1.CCMP = 16667;                // Set interval for 5ms
     TCB1.INTCTRL = TCB_CAPT_bm;      // CAPT interrupt enable
     TCB1.CTRLA = TCB_ENABLE_bm;      // Enable
     sei();
@@ -35,7 +35,7 @@ ISR(TCB1_INT_vect)
     count1 = (count1 ^ count0) & pb_changed;
     count0 = ~count0 & pb_changed;
 
-    pb_debounced_state ^= (count1 & count0);
+    pb_debounced_state ^= (count1 & count0) | (pb_changed & pb_debounced_state);
 
     TCB1.INTFLAGS = TCB_CAPT_bm;
 }
