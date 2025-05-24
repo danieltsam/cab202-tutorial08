@@ -1,4 +1,6 @@
 #include "timer.h"
+#include <stdio.h>
+#include <avr/io.h>
 
 uint8_t pb_falling_edge = 0;
 
@@ -45,6 +47,8 @@ int main(void)
     Initialise this variable with the initial state of the state machine.
     */
     led_state my_state = OFF;
+    
+    PORTB.DIRSET = PIN5_bm;
 
     /** CODE: Write your code for Ex 8.1 above this line. */
 
@@ -97,37 +101,42 @@ int main(void)
         */
         /** EX: 8.3 */
 
-            switch (my_state) {
+        switch (my_state) {
         case OFF:
+            PORTB.OUTCLR = PIN5_bm; // DP off
             if (pb_falling_edge & (1 << 4)) { // S1 pressed
                 my_state = CONFIRM_ON;
             }
             break;
 
         case CONFIRM_ON:
+            PORTB.OUTCLR = PIN5_bm;
             if (pb_falling_edge & (1 << 5)) { // S2 pressed
                 my_state = ON;
-            } else if (pb_falling_edge & ((1 << 4) | (1 << 6) | (1 << 7))) { // S1, S3, or S4 pressed
+            } else if (pb_falling_edge & ((1 << 4) | (1 << 6) | (1 << 7))) { // S1, S3, S4
                 my_state = OFF;
             }
             break;
 
         case ON:
+            PORTB.OUTSET = PIN5_bm; // DP on
             if (pb_falling_edge & (1 << 6)) { // S3 pressed
                 my_state = CONFIRM_OFF;
             }
             break;
 
         case CONFIRM_OFF:
+            PORTB.OUTSET = PIN5_bm;
             if (pb_falling_edge & (1 << 7)) { // S4 pressed
                 my_state = OFF;
-            } else if (pb_falling_edge & ((1 << 4) | (1 << 5) | (1 << 6))) { // S1, S2, or S3 pressed
+            } else if (pb_falling_edge & ((1 << 4) | (1 << 5) | (1 << 6))) { // S1, S2, S3
                 my_state = ON;
             }
             break;
 
         default:
             my_state = OFF;
+            PORTB.OUTCLR = PIN5_bm;
             break;
         }
 
