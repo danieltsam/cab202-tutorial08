@@ -73,11 +73,11 @@ int main(void)
         iterations of this while loop.
         */
 
-        static uint8_t previous_pb_state = 0xFF;
+        static uint8_t previous = 0xFF;
+        uint8_t current = pb_debounced_state;
+        pb_falling_edge = (previous ^ current) & previous;
+        previous = current;
 
-        pb_falling_edge = (previous_pb_state ^ pb_debounced_state) & previous_pb_state;
-
-        previous_pb_state = pb_debounced_state;
 
         /** CODE: Write your code for Ex 8.2 above this line. */
 
